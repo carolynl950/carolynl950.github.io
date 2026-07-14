@@ -1,0 +1,56 @@
+# Projects shown on the homepage, in order.
+# bullet: the letter shown in the subway-line circle
+# color:  the MTA line color for that bullet
+- title: MoodSwing
+  bullet: M
+  color: "#FF6319"
+  description: >-
+    An AI DJ that reads your facial expressions and queues up
+    songs to match your mood.
+  tags: [Hugging Face, ElevenLabs, Gemini]
+  link: https://devpost.com/software/moodswing-27fmc0
+  link_text: Devpost
+  slides: https://docs.google.com/presentation/d/e/2PACX-1vTd5uQNZnFHuuRyLkTmFXOXjKqHAkQrkd8v270rPZYDTrnoFpL-Db4YIe7GrnhQm-SEoJmFl4QLbRM5/pub
+
+- title: aiMed
+  bullet: A
+  color: "#0039A6"
+  description: >-
+    An AI medical agent that answers questions about medication
+    interactions and compares treatment options.
+  tags: [K2 Think, Supabase, Web]
+  link: https://devpost.com/software/aimed-ek4mcr
+  link_text: Devpost
+  slides: https://docs.google.com/presentation/d/e/2PACX-1vR4SR1dX26etsq-DzclCWGfoyN1nSAAOBxsCvPtF3j9ITNtt3MiEwGWLTyDCdPAa552fjoIvMt9-Kq4/pub
+
+- title: CalRoarie
+  bullet: C
+  color: "#808183"
+  description: >-
+    A real-time nutrition(calories, protein, etc.) tracking app for Columbia dining halls.
+  tags: [Swift, Python, Flask]
+  link: https://apps.apple.com/us/app/calroarie/id6758307010
+  link_text: iOS app
+  slides: ""
+  
+- title: StockTrader
+  bullet: S
+  color: "#808183"
+  description: >-
+    A stock trading simulator where students compete on
+    portfolios and teachers track their progress.
+  tags: [Firebase, Flask, FlutterFlow]
+  link: https://cmtrading.flutterflow.app/
+  link_text: Live app
+  slides: https://docs.google.com/presentation/d/e/2PACX-1vT4idOeAKFyYLhLYYL9qC4wG6Hyl4pz_R6zbXyQB9uIGzav6TCqWrrFhgEfZXk4LqJwCSnOHwMOV1ld/pub
+
+- title: CAIR Necklace
+  bullet: C
+  color: "#0039A6"
+  description: >-
+    A wearable CO₂-detecting necklace that shifts color to warn
+    you about the air quality around you.
+  tags: [IoT, CircuitPython, Wearables]
+  link: ""
+  link_text: Coming soon
+  slides: ""
