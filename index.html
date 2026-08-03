@@ -159,6 +159,9 @@ layout: null
       <div class="project-grid">
         {% for p in site.data.projects %}
         <article class="card">
+          {% if p.achievement %}
+            <span class="card-badge">{{ p.achievement }}</span>
+          {% endif %}
           <div class="card-head">
             <span class="bullet lg" style="background: {{ p.color }}">{{ p.bullet }}</span>
             <h3>{{ p.title }}</h3>

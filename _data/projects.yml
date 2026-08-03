@@ -4,6 +4,7 @@
 - title: MoodSwing
   bullet: M
   color: "#FF6319"
+  achievement: "DivHacks Sponsor Winner"
   description: >-
     An AI DJ that reads your facial expressions and queues up
     songs to match your mood.
@@ -36,6 +37,7 @@
 - title: CalRoarie
   bullet: C
   color: "#808183"
+  achievement: "350+ Downloads within 2 Weeks of Launch"
   description: >-
     A real-time nutrition(calories, protein, etc.) tracking app for Columbia dining halls.
   tags: [Swift, Python, Flask]
