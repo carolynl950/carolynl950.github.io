@@ -12,6 +12,16 @@
   link_text: Devpost
   slides: https://docs.google.com/presentation/d/e/2PACX-1vTd5uQNZnFHuuRyLkTmFXOXjKqHAkQrkd8v270rPZYDTrnoFpL-Db4YIe7GrnhQm-SEoJmFl4QLbRM5/pub
 
+- title: Redis From Scratch (ongoing)
+  bullet: R
+  color: "#E41B17"
+  description: >-
+    A miniature Redis server built from scratch in C++ — no libraries beyond the standard library and POSIX sockets.
+  tags: [C++, Networking, Systems]
+  link: https://github.com/carolynl950/redis-from-scratch
+  link_text: GitHub
+  slides: ""
+
 - title: aiMed
   bullet: A
   color: "#0039A6"
