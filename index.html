@@ -1,243 +1,171 @@
----
-layout: null
----
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Carolyn Lee — CS + Math @ Columbia Engineering</title>
-  <meta name="description" content="Carolyn Lee is a Columbia Engineering student building things with code and math. Based in New York City.">
-  <meta property="og:title" content="Carolyn Lee — Portfolio">
-  <meta property="og:description" content="Columbia Engineering student in New York City. Projects in AI, web, and wearables.">
-  <link rel="icon" href="{{ '/img/favicon.png' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/css/nyc.css' | relative_url }}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carolyn Lee</title>
+<meta name="description" content="Carolyn Lee is a Columbia Engineering student building things with code and math. Based in New York City.">
+<meta property="og:title" content="Carolyn Lee — Portfolio">
+<meta property="og:description" content="Columbia Engineering student in New York City. Projects in AI, web, and wearables.">
+<link rel="icon" href="img/favicon.png">
+<script src="./support.js"></script>
 </head>
 <body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="nocturne/styles.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: var(--color-bg); }
+  a { color: var(--color-accent); text-decoration: none; }
+  a:hover { color: var(--color-accent-300); }
 
-  <!-- ============ NAV ============ -->
-  <nav class="nav">
-    <a class="nav-brand" href="#top">
-      <span class="bullet bullet-yellow">CL</span>
-      <span class="nav-name">Carolyn Lee</span>
-    </a>
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </nav>
+  .proj-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .proj-card::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), transparent 85%);
+    opacity: 0; transform: scaleX(0.4); transform-origin: left;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .proj-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-neutral-700);
+    box-shadow: var(--shadow-md);
+  }
+  .proj-card:hover::before { opacity: 1; transform: scaleX(1); }
+  .proj-index {
+    position: absolute; top: var(--space-3); right: var(--space-4);
+    font-family: var(--font-heading); font-size: 30px; font-weight: 600;
+    color: var(--color-accent-800); line-height: 1; user-select: none;
+    transition: color 0.25s ease;
+  }
+  .proj-card:hover .proj-index { color: var(--color-accent-600); }
+  .proj-card .card-title { padding-right: var(--space-8); }
 
-  <!-- ============ HERO ============ -->
-  <header class="hero" id="top">
-    <div class="stars" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <p class="hero-kicker">
-        <span class="bullet bullet-red sm">1</span> Now arriving at
-      </p>
-      <h1 class="hero-name">Carolyn Lee</h1>
-      <p class="hero-sub">Computer science + math at <strong>Columbia Engineering</strong></p>
-      <p class="hero-loc"><span class="pin" aria-hidden="true"></span> New York, NY</p>
-      <div class="hero-cta">
-        <a class="btn btn-yellow" href="#projects">See my projects</a>
-        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+  .stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.12); }
+</style>
+<script>window.OM_SCENES = '[{"name":"Roll","dur":2,"desc":"First person on the surface, following a ball that rolls ahead along the band"},{"name":"Rise","dur":2,"desc":"The band twists up and the far side comes into view ahead"},{"name":"Flip","dur":2,"desc":"Halfway: you pass over your own starting point, now upside down"},{"name":"Home","dur":2,"desc":"The second circuit brings you back the same way up, closing the loop"}]';</script>
+<script>window.OM_PLAYBACK = '{"mode":"loop"}';</script>
+<script>window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "twists": 1,
+  "ribs": 80,
+  "shaded": true,
+  "showEquations": false,
+  "title": "Carolyn Lee",
+  "subtitle": "Computer Science — New York",
+  "motionEditor": true
+}/*EDITMODE-END*/;</script>
+</helmet>
+<div style="background: var(--color-bg); color: var(--color-text); font-family: var(--font-body);">
+  <div style="position: sticky; top: 0; height: 100vh; overflow: hidden;">
+    <x-import component-from-global-scope="MobiusScene" from="./animations-v3.jsx ./tweaks-panel.jsx ./mobius-scene.jsx" hint-size="100%,100%"></x-import>
+  </div>
+  <div style="position: relative; min-height: 100vh; background: var(--color-bg); border-top: 1px solid var(--color-neutral-800); display: flex; flex-direction: column;">
+    <nav class="nav" style="padding: var(--space-6) calc(var(--space-8) * 3);">
+      <span class="nav-brand">Carolyn Lee</span>
+      <div style="display: flex; gap: var(--space-6); align-items: center;">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </div>
-    </div>
-
-    <!-- skyline -->
-    <svg class="skyline" viewBox="0 0 1440 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <!-- distant buildings -->
-      <polygon class="sky-back" points="0,260 0,150 55,150 55,115 120,115 120,165 195,165 195,125 260,125 260,175 330,175 330,105 400,105 400,160 470,160 470,130 545,130 545,175 615,175 615,120 690,120 690,165 760,165 760,135 835,135 835,170 910,170 910,110 985,110 985,160 1060,160 1060,125 1140,125 1140,170 1215,170 1215,130 1295,130 1295,165 1370,165 1370,140 1440,140 1440,260"/>
-      <!-- foreground buildings -->
-      <g class="sky-front">
-        <rect x="0" y="140" width="88" height="120"/>
-        <rect x="98" y="112" width="80" height="148"/>
-        <rect x="112" y="92" width="52" height="22"/>
-        <!-- Empire State -->
-        <rect x="248" y="102" width="92" height="158"/>
-        <rect x="264" y="62" width="60" height="42"/>
-        <rect x="282" y="32" width="24" height="32"/>
-        <rect x="292" y="6" width="4" height="28"/>
-        <rect x="356" y="132" width="70" height="128"/>
-        <rect x="446" y="82" width="62" height="178"/>
-        <!-- Chrysler -->
-        <rect x="534" y="92" width="72" height="168"/>
-        <polygon points="534,92 570,38 606,92"/>
-        <rect x="568" y="18" width="4" height="22"/>
-        <rect x="636" y="122" width="58" height="138"/>
-        <rect x="712" y="148" width="76" height="112"/>
-        <!-- One WTC -->
-        <polygon points="806,260 822,58 882,58 898,260"/>
-        <rect x="850" y="12" width="4" height="48"/>
-        <rect x="928" y="118" width="66" height="142"/>
-        <rect x="1012" y="88" width="58" height="172"/>
-        <rect x="1088" y="140" width="80" height="120"/>
-        <rect x="1102" y="118" width="46" height="24"/>
-        <rect x="1188" y="102" width="62" height="158"/>
-        <rect x="1268" y="150" width="76" height="110"/>
-        <rect x="1362" y="112" width="78" height="148"/>
-      </g>
-      <!-- lit windows -->
-      <g class="lights">
-        <rect x="16" y="158" width="5" height="7"/>
-        <rect x="52" y="182" width="5" height="7"/>
-        <rect x="118" y="130" width="5" height="7"/>
-        <rect x="146" y="160" width="5" height="7"/>
-        <rect x="266" y="122" width="5" height="7"/>
-        <rect x="300" y="150" width="5" height="7"/>
-        <rect x="282" y="190" width="5" height="7"/>
-        <rect x="318" y="126" width="5" height="7"/>
-        <rect x="376" y="152" width="5" height="7"/>
-        <rect x="402" y="188" width="5" height="7"/>
-        <rect x="462" y="104" width="5" height="7"/>
-        <rect x="486" y="146" width="5" height="7"/>
-        <rect x="552" y="116" width="5" height="7"/>
-        <rect x="584" y="158" width="5" height="7"/>
-        <rect x="566" y="200" width="5" height="7"/>
-        <rect x="654" y="142" width="5" height="7"/>
-        <rect x="730" y="168" width="5" height="7"/>
-        <rect x="838" y="98" width="5" height="7"/>
-        <rect x="862" y="146" width="5" height="7"/>
-        <rect x="848" y="196" width="5" height="7"/>
-        <rect x="946" y="138" width="5" height="7"/>
-        <rect x="1030" y="108" width="5" height="7"/>
-        <rect x="1046" y="164" width="5" height="7"/>
-        <rect x="1120" y="158" width="5" height="7"/>
-        <rect x="1206" y="122" width="5" height="7"/>
-        <rect x="1232" y="170" width="5" height="7"/>
-        <rect x="1290" y="172" width="5" height="7"/>
-        <rect x="1386" y="132" width="5" height="7"/>
-        <rect x="1404" y="180" width="5" height="7"/>
-      </g>
-    </svg>
-  </header>
-
-  <main>
-    <!-- ============ ABOUT ============ -->
-    <section class="section" id="about">
-      <div class="station-sign">
-        <span class="bullet bullet-red">1</span>
-        <h2>About</h2>
+    </nav>
+    <div id="work" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: calc(var(--space-8) * 3);">
+      <div>
+        <span class="card-kicker">Selected work</span>
+        <h1 style="margin: var(--space-2) 0 0; letter-spacing: -0.02em;">Projects</h1>
       </div>
-      <div class="about-grid">
-        <div class="about-text">
-          <p>
-            Hi! I'm Carolyn, a student at <strong>Columbia Engineering</strong> studying
-            computer science and math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!
-          </p>
-          <p>
-            Outside of school, I enjoy <strong>working out</strong>, <strong>food photography</strong>, and exploring the city.
-          </p>
-        </div>
-        <div class="about-photo" aria-hidden="true">
-          <div class="photo-placeholder">
-            <span class="photo-icon">📷</span>
-            <span>Photo on the way</span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4);">
+        <div class="card proj-card elev-sm" style="grid-column: span 2;">
+          <span class="proj-index">01</span>
+          <span class="tag tag-accent" style="align-self: flex-start;">Featured</span>
+          <div class="card-title" style="font-size: 22px;">MoodSwing</div>
+          <p class="card-body">An AI DJ that reads your facial expressions and queues up songs to match your mood.</p>
+          <div class="card-meta">
+            <a href="https://devpost.com/software/moodswing-27fmc0" target="_blank" rel="noopener">Devpost</a>
+            <span>&middot;</span>
+            <a href="https://docs.google.com/presentation/d/e/2PACX-1vTd5uQNZnFHuuRyLkTmFXOXjKqHAkQrkd8v270rPZYDTrnoFpL-Db4YIe7GrnhQm-SEoJmFl4QLbRM5/pub" target="_blank" rel="noopener">Slides</a>
           </div>
         </div>
-      </div>
-
-      <!-- interests as a subway line -->
-      <div class="route" role="list" aria-label="Interests">
-        <div class="route-stop" role="listitem"><span class="dot"></span><span class="stop-label">Computer Science</span></div>
-        <div class="route-stop" role="listitem"><span class="dot"></span><span class="stop-label">Mathematics</span></div>
-        <div class="route-stop" role="listitem"><span class="dot"></span><span class="stop-label">AI &amp; ML</span></div>
-        <div class="route-stop" role="listitem"><span class="dot"></span><span class="stop-label">Hackathons</span></div>
-        <div class="route-stop next" role="listitem"><span class="dot"></span><span class="stop-label">Photography<em>next stop</em></span></div>
-      </div>
-    </section>
-
-    <!-- ============ PROJECTS ============ -->
-    <section class="section" id="projects">
-      <div class="station-sign">
-        <span class="bullet bullet-red">2</span>
-        <h2>Projects</h2>
-      </div>
-      <div class="project-grid">
-        {% for p in site.data.projects %}
-        <article class="card">
-          {% if p.achievement %}
-            <span class="card-badge">{{ p.achievement }}</span>
-          {% endif %}
-          <div class="card-head">
-            <span class="bullet lg" style="background: {{ p.color }}">{{ p.bullet }}</span>
-            <h3>{{ p.title }}</h3>
+        <div class="card proj-card elev-sm">
+          <span class="proj-index">02</span>
+          <div class="card-title">CalRoarie</div>
+          <p class="card-body">A real-time nutrition (calories, protein, and more) tracking app for Columbia dining halls.</p>
+          <div class="card-meta">
+            <a href="https://apps.apple.com/us/app/calroarie/id6758307010" target="_blank" rel="noopener">Download</a>
           </div>
-          <p class="card-desc">{{ p.description }}</p>
-          <ul class="tags">
-            {% for tag in p.tags %}<li>{{ tag }}</li>{% endfor %}
-          </ul>
-          <div class="card-links">
-            {% if p.link != "" %}
-              <a class="card-link" href="{{ p.link }}" target="_blank" rel="noopener">{{ p.link_text }} ↗</a>
-            {% else %}
-              <span class="card-link muted">{{ p.link_text }}</span>
-            {% endif %}
-            {% if p.slides != "" %}
-              <a class="card-link" href="{{ p.slides }}" target="_blank" rel="noopener">Slides ↗</a>
-            {% endif %}
+        </div>
+        <div class="card proj-card elev-sm">
+          <span class="proj-index">03</span>
+          <div class="card-title">aiMed</div>
+          <p class="card-body">An AI medical agent that answers questions about medication interactions and compares treatment options.</p>
+          <div class="card-meta">
+            <a href="https://devpost.com/software/aimed-ek4mcr" target="_blank" rel="noopener">Devpost</a>
+            <span>&middot;</span>
+            <a href="https://docs.google.com/presentation/d/e/2PACX-1vR4SR1dX26etsq-DzclCWGfoyN1nSAAOBxsCvPtF3j9ITNtt3MiEwGWLTyDCdPAa552fjoIvMt9-Kq4/pub" target="_blank" rel="noopener">Slides</a>
           </div>
-        </article>
-        {% endfor %}
+        </div>
+        <div class="card proj-card elev-sm">
+          <span class="proj-index">04</span>
+          <div class="card-title">StockTrader</div>
+          <p class="card-body">A stock trading simulator where students compete on portfolios and teachers track their progress.</p>
+          <div class="card-meta">
+            <a href="https://cmtrading.flutterflow.app/uploadpage" target="_blank" rel="noopener">Live platform</a>
+            <span>&middot;</span>
+            <a href="https://docs.google.com/presentation/d/e/2PACX-1vT4idOeAKFyYLhLYYL9qC4wG6Hyl4pz_R6zbXyQB9uIGzav6TCqWrrFhgEfZXk4LqJwCSnOHwMOV1ld/pub" target="_blank" rel="noopener">Slides</a>
+          </div>
+        </div>
+        <div class="card proj-card elev-sm">
+          <span class="proj-index">05</span>
+          <div class="card-title">Redis From Scratch</div>
+          <p class="card-body">A miniature Redis server built from scratch in C++ &mdash; no libraries beyond the standard library and POSIX sockets.</p>
+          <div class="card-meta">
+            <span class="tag tag-outline">Ongoing</span>
+          </div>
+        </div>
+        <div class="card proj-card elev-sm">
+          <span class="proj-index">06</span>
+          <div class="card-title">GEMM</div>
+          <p class="card-body">Writing a GEMM (matrix multiplication) kernel in C++, learning performance optimization.</p>
+          <div class="card-meta">
+            <span class="tag tag-outline">Ongoing</span>
+          </div>
+        </div>
+        <div class="card proj-card elev-sm">
+          <span class="proj-index">07</span>
+          <div class="card-title">Reaction Game</div>
+          <p class="card-body">A quick reflex game &mdash; catch the falling stick before it hits the ground.</p>
+        </div>
       </div>
-    </section>
-
-    <!-- ============ PHOTOGRAPHY (auto-hidden until _data/photos.yml exists) ============
-         To turn this on later: create _data/photos.yml with entries like
-           - src: /img/photos/brooklyn-bridge.jpg
-             caption: Brooklyn Bridge at dusk
-         and drop the images in img/photos/.                                        -->
-    {% if site.data.photos %}
-    <section class="section" id="photos">
-      <div class="station-sign">
-        <span class="bullet bullet-red">3</span>
-        <h2>Photography</h2>
-      </div>
-      <div class="photo-grid">
-        {% for photo in site.data.photos %}
-        <figure>
-          <img src="{{ photo.src | relative_url }}" alt="{{ photo.caption }}" loading="lazy">
-          <figcaption>{{ photo.caption }}</figcaption>
-        </figure>
-        {% endfor %}
-      </div>
-    </section>
-    {% endif %}
-
-    <!-- ============ CONTACT ============ -->
-    <section class="section" id="contact">
-      <div class="station-sign">
-        <span class="bullet bullet-red">{% if site.data.photos %}4{% else %}3{% endif %}</span>
-        <h2>Last stop — say hi</h2>
-      </div>
-      <div class="contact-grid">
-        <a class="contact-card" href="https://www.linkedin.com/in/{{ site.linkedin_username }}" target="_blank" rel="noopener">
-          <span class="contact-kind">LinkedIn</span>
-          <span class="contact-val">in/{{ site.linkedin_username }} ↗</span>
-        </a>
-        <a class="contact-card" href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener">
-          <span class="contact-kind">GitHub</span>
-          <span class="contact-val">@{{ site.github_username }} ↗</span>
-        </a>
-        <a class="contact-card" href="mailto:{{ site.email }}">
-          <span class="contact-kind">Email</span>
-          <span class="contact-val">{{ site.email }}</span>
-        </a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-dots" aria-hidden="true">
-      <span style="background:#EE352E"></span>
-      <span style="background:#FF6319"></span>
-      <span style="background:#FCCC0A"></span>
-      <span style="background:#00933C"></span>
-      <span style="background:#0039A6"></span>
-      <span style="background:#B933AD"></span>
     </div>
-    <p>© 2026 Carolyn Lee · Made in New York City</p>
-  </footer>
-
+    <div id="about" style="border-top: 1px solid var(--color-neutral-800); padding-bottom: calc(var(--space-8) * 3);">
+      <div style="display: flex; flex-direction: column; gap: var(--space-4); padding: calc(var(--space-8) * 3) calc(var(--space-8) * 3) calc(var(--space-8) * 2); max-width: 640px;">
+        <span class="card-kicker">About</span>
+        <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Hi, I&rsquo;m Carolyn.</h2>
+        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">I&rsquo;m a student at Columbia Engineering studying computer science and applied math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!</p>
+        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Outside of school, I enjoy working out, photography, and exploring the city.</p>
+      </div>
+      <div style="background: var(--color-section); display: flex; flex-wrap: wrap;">
+        <div class="stat-item" style="flex: 1 1 220px; padding: var(--space-8) calc(var(--space-8) * 3);">
+          <div class="card-kicker">Studying</div>
+          <div style="font-family: var(--font-heading); font-weight: 600; font-size: 21px; margin-top: var(--space-2);">CS &amp; Applied Math</div>
+        </div>
+        <div class="stat-item" style="flex: 1 1 220px; padding: var(--space-8) calc(var(--space-8) * 3);">
+          <div class="card-kicker">At</div>
+          <div style="font-family: var(--font-heading); font-weight: 600; font-size: 21px; margin-top: var(--space-2);">Columbia Engineering</div>
+        </div>
+        <div class="stat-item" style="flex: 1 1 220px; padding: var(--space-8) calc(var(--space-8) * 3);">
+          <div class="card-kicker">Outside class</div>
+          <div style="font-family: var(--font-heading); font-weight: 600; font-size: 21px; margin-top: var(--space-2);">Lifting, photography, NYC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
 </body>
 </html>
