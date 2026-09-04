@@ -8,6 +8,12 @@ const TOK = {
   a300: '#d2cefd', a500: '#968ae0', a800: '#423a6a',
   n300: '#cfd3e5', n600: '#75798c', n800: '#3f424d'
 };
+const hexLerp = (a, b, t) => {
+  const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+  const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+  const c = pa.map((v, i) => Math.round(v + (pb[i] - v) * clamp(t, 0, 1)));
+  return '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
+};
 
 /* ---------- vectors ---------- */
 const V = {
@@ -126,103 +132,102 @@ const ballAt = (T, total, k) => {
   const n = NRM(u, v, k);
   return { u, v, p: V.add(MP(u, v, k), V.mul(n, BALL_R)), n };
 };
+const ballPointFromUV = (u, v, k) => V.add(MP(u, v, k), V.mul(NRM(u, v, k), BALL_R));
 
-/* A cat outline sits outside the band entirely, a large foreground
-   silhouette perched in the corner. It doesn't ride the surface — it's a
-   flat overlay, so camera moves through the twist never distort it — and
-   one paw keeps reaching toward wherever the ball currently projects to,
-   batting at it in a steady rhythm. Line art only, matching the edge curve. */
-const CAT_ANCHOR = { x: 1460, y: 1050 };
-const CAT_SCALE = 1.35;
-const CAT_PIVOT_LOCAL = [200, 463]; // lowest point of the silhouette (tail loop), so nothing clips the frame bottom
-const CAT_SHOULDER_LOCAL = [90, 255]; // where the reaching (upper) paw hinges
-const CAT_SWIPE_PERIOD = 1.4;
-const CAT_MAX_REACH = 260;
-
-// nose → forehead → over the head → nape → back → hip → tail, curling at the tip
-const CAT_BACK_D = 'M 55 205 C 40 175 38 135 55 100 C 70 65 100 45 130 55 ' +
-  'C 160 65 185 85 205 115 C 250 140 300 190 315 250 C 325 295 315 335 295 365 ' +
-  'C 275 390 250 400 225 402 C 260 395 290 400 330 415 C 365 425 400 420 415 440 ' +
-  'C 425 452 412 463 398 452 C 390 446 396 434 402 424';
-// chin, chest, the one visible front leg and its paw
-const CAT_FRONT_D = 'M 55 205 C 60 230 68 255 78 278 C 88 298 92 318 92 340 L 95 415 ' +
-  'C 95 432 85 442 68 445 M 68 445 L 52 440 M 68 445 L 68 458 M 68 445 L 84 442';
-const CAT_EAR1_D = 'M 90 25 L 65 -25 L 128 40';
-const CAT_EAR2_D = 'M 150 50 L 158 0 L 195 60';
-const CAT_WHISKERS_D = 'M 50 190 L -20 175 M 48 205 L -25 205 M 50 220 L -20 235';
-
-function CatOutline({ project, T, total, k }) {
-  const b = ballAt(T, total, k);
-  const bp = project(b.p);
-  const tx = CAT_ANCHOR.x - CAT_PIVOT_LOCAL[0] * CAT_SCALE;
-  const ty = CAT_ANCHOR.y - CAT_PIVOT_LOCAL[1] * CAT_SCALE;
-  const pivot = [tx + CAT_SHOULDER_LOCAL[0] * CAT_SCALE, ty + CAT_SHOULDER_LOCAL[1] * CAT_SCALE];
-
-  let ex = pivot[0], ey = pivot[1], reach = 0;
-  if (bp[2] > 0.12) {
-    const dx = bp[0] - pivot[0], dy = bp[1] - pivot[1];
-    const dist = Math.hypot(dx, dy) || 1;
-    const dirx = dx / dist, diry = dy / dist;
-    const pulse = Math.max(0, Math.sin((T / CAT_SWIPE_PERIOD) * TAU));
-    reach = pulse * Math.min(CAT_MAX_REACH * CAT_SCALE, dist * 0.85);
-    ex = pivot[0] + dirx * reach;
-    ey = pivot[1] + diry * reach;
-  }
-  const ang = Math.atan2(ey - pivot[1], ex - pivot[0]);
-  const perp = [-Math.sin(ang), Math.cos(ang)];
-  const midx = (pivot[0] + ex) / 2 + perp[0] * 18, midy = (pivot[1] + ey) / 2 + perp[1] * 18;
-  const toe1 = [ex + perp[0] * 14 - Math.cos(ang) * 10, ey + perp[1] * 14 - Math.sin(ang) * 10];
-  const toe2 = [ex - perp[0] * 14 - Math.cos(ang) * 10, ey - perp[1] * 14 - Math.sin(ang) * 10];
-  const STROKE = TOK.text;
-
+function Ball({ project, point, surfacePoint, trailPts, opacity = 1, scaleMul = 1, stretchAngle = 0, stretchAmt = 0, hot = 0 }) {
+  const p = project(point);
+  if (p[2] < 0.12 || opacity <= 0.01) return null;
+  const r = Math.max(3, (BALL_R * FOCAL) / p[2]) * scaleMul;
+  const rx = r * (1 + stretchAmt), ry = r * (1 - stretchAmt * 0.55);
+  const c = surfacePoint ? project(surfacePoint) : null;
+  const trailColor = hexLerp(TOK.a300, TOK.accent, hot);
+  const trail = (trailPts || []).map((tp, i) => {
+    const s = project(tp);
+    return s[2] > 0.12 ? { x: s[0], y: s[1], r: r * (1 - (i + 1) * 0.07), o: (0.24 + hot * 0.16) * (1 - (i + 1) / 9) } : null;
+  }).filter(Boolean);
   return (
-    <g>
-      <g transform={`translate(${tx},${ty}) scale(${CAT_SCALE})`} fill="none" stroke={STROKE}
-         strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity={0.92}>
-        <path d={CAT_BACK_D} />
-        <path d={CAT_FRONT_D} />
-        <path d={CAT_EAR1_D} />
-        <path d={CAT_EAR2_D} />
-        <circle cx="85" cy="150" r="6" fill={STROKE} stroke="none" />
-        <circle cx="130" cy="148" r="6" fill={STROKE} stroke="none" />
-        <circle cx="55" cy="205" r="5" fill={STROKE} stroke="none" />
-        <path d={CAT_WHISKERS_D} strokeWidth={3} />
+    <g opacity={opacity}>
+      {trail.map((t, i) => <circle key={i} cx={t.x} cy={t.y} r={t.r} fill={trailColor} opacity={t.o} />)}
+      {c && c[2] > 0.12 && <ellipse cx={c[0]} cy={c[1]} rx={r * 1.15} ry={r * 0.42} fill={TOK.bg} opacity={0.55} />}
+      <g transform={`rotate(${stretchAngle.toFixed(1)} ${p[0].toFixed(1)} ${p[1].toFixed(1)})`}>
+        <ellipse cx={p[0]} cy={p[1]} rx={r * 1.9} ry={r * 1.9} fill={TOK.accent} opacity={0.16} />
+        <ellipse cx={p[0]} cy={p[1]} rx={rx} ry={ry} fill={TOK.n300} />
+        <circle cx={p[0] - r * 0.3} cy={p[1] - r * 0.34} r={r * 0.52} fill={TOK.text} opacity={0.9} />
+        <ellipse cx={p[0]} cy={p[1]} rx={rx} ry={ry} fill="none" stroke={TOK.a300} strokeOpacity={0.7} strokeWidth={1.2} />
       </g>
-      <path d={`M ${pivot[0]} ${pivot[1]} Q ${midx} ${midy} ${ex} ${ey}`} fill="none" stroke={STROKE}
-            strokeWidth={5} strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={0.92} />
-      {reach > 20 && (
-        <g stroke={STROKE} strokeWidth={3} strokeLinecap="round" opacity={0.9}>
-          <line x1={ex} y1={ey} x2={toe1[0]} y2={toe1[1]} />
-          <line x1={ex} y1={ey} x2={toe2[0]} y2={toe2[1]} />
-        </g>
-      )}
     </g>
   );
 }
 
-function Ball({ project, T, total, k }) {
-  const b = ballAt(T, total, k);
-  const p = project(b.p);
-  if (p[2] < 0.12) return null;
-  const r = Math.max(3, (BALL_R * FOCAL) / p[2]);
-  // contact shadow, sitting on the surface itself
-  const c = project(MP(b.u, b.v, k));
-  const trail = [];
-  for (let i = 1; i <= 9; i++) {
-    const tb = ballAt(T - i * (total / 190), total, k);
-    const tp = project(tb.p);
-    if (tp[2] > 0.12) trail.push({ x: tp[0], y: tp[1], r: r * (1 - i * 0.07), o: 0.24 * (1 - i / 9) });
-  }
+/* The cursor becomes a paw. Get it near the ball and it bats the ball's
+   path sideways — a damped spring pulls the ball back onto its course the
+   moment you back off, so the loop always recovers. */
+const REPEL_R = 320, REPEL_FORCE = 10, SPRING_K = 13, SPRING_D = 5;
+function CursorPaw({ x, y, active, punch }) {
+  if (!active) return null;
+  const scale = 0.92 + punch * 0.22;
+  const rot = -10 - punch * 10;
+  const clawLen = clamp((punch - 0.5) / 0.5, 0, 1) * 9;
   return (
-    <g>
-      {trail.map((t, i) => <circle key={i} cx={t.x} cy={t.y} r={t.r} fill={TOK.a300} opacity={t.o} />)}
-      {c[2] > 0.12 && <ellipse cx={c[0]} cy={c[1]} rx={r * 1.15} ry={r * 0.42} fill={TOK.bg} opacity={0.55} />}
-      <circle cx={p[0]} cy={p[1]} r={r * 1.9} fill={TOK.accent} opacity={0.16} />
-      <circle cx={p[0]} cy={p[1]} r={r} fill={TOK.n300} />
-      <circle cx={p[0] - r * 0.3} cy={p[1] - r * 0.34} r={r * 0.52} fill={TOK.text} opacity={0.9} />
-      <circle cx={p[0]} cy={p[1]} r={r} fill="none" stroke={TOK.a300} strokeOpacity={0.7} strokeWidth={1.2} />
+    <g transform={`translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${scale.toFixed(3)})`} opacity={0.94}>
+      <defs>
+        <radialGradient id="pawFur" cx="38%" cy="28%" r="78%">
+          <stop offset="0%" stopColor={TOK.n300} />
+          <stop offset="55%" stopColor={TOK.text} />
+          <stop offset="100%" stopColor={TOK.n600} />
+        </radialGradient>
+      </defs>
+      <ellipse cx="0" cy="86" rx="80" ry="26" fill={TOK.bg} opacity={0.35} />
+      <g transform="rotate(-18) translate(-15,-14)">
+        <ellipse cx="0" cy="0" rx="17" ry="23" fill="url(#pawFur)" />
+        <ellipse cx="1" cy="6" rx="7" ry="9" fill={TOK.n600} opacity={0.4} />
+        {clawLen > 0.3 && <path d={`M -3 -22 L -3 ${-22 - clawLen}`} stroke={TOK.text} strokeWidth={1.3} strokeLinecap="round" opacity={clawLen / 9} />}
+      </g>
+      <g transform="rotate(-4) translate(6,-24)">
+        <ellipse cx="0" cy="0" rx="18" ry="24" fill="url(#pawFur)" />
+        <ellipse cx="1" cy="7" rx="7.5" ry="9.5" fill={TOK.n600} opacity={0.4} />
+        {clawLen > 0.3 && <path d={`M -1 -23 L -1 ${-23 - clawLen}`} stroke={TOK.text} strokeWidth={1.3} strokeLinecap="round" opacity={clawLen / 9} />}
+      </g>
+      <g transform="rotate(12) translate(27,-20)">
+        <ellipse cx="0" cy="0" rx="17" ry="23" fill="url(#pawFur)" />
+        <ellipse cx="1" cy="6" rx="7" ry="9" fill={TOK.n600} opacity={0.4} />
+        {clawLen > 0.3 && <path d={`M 1 -22 L 1 ${-22 - clawLen}`} stroke={TOK.text} strokeWidth={1.3} strokeLinecap="round" opacity={clawLen / 9} />}
+      </g>
+      <g transform="rotate(28) translate(44,-4)">
+        <ellipse cx="0" cy="0" rx="15" ry="20" fill="url(#pawFur)" />
+        <ellipse cx="1" cy="5" rx="6" ry="7.5" fill={TOK.n600} opacity={0.4} />
+        {clawLen > 0.3 && <path d={`M 1 -19 L 1 ${-19 - clawLen}`} stroke={TOK.text} strokeWidth={1.2} strokeLinecap="round" opacity={clawLen / 9} />}
+      </g>
+      <ellipse cx="12" cy="26" rx="46" ry="42" fill="url(#pawFur)" />
+      <ellipse cx="8" cy="34" rx="16" ry="13" fill={TOK.n600} opacity={0.35} />
     </g>
   );
+}
+
+/* The boundary brightens near the ball as it's pushed toward the edge —
+   telegraphs the fall before it happens. */
+function EdgeWarning({ project, k, u, side, intensity }) {
+  if (intensity <= 0.02) return null;
+  const N = 40, span = 1.0;
+  let d = '', pen = false;
+  for (let i = 0; i <= N; i++) {
+    const uu = u - span / 2 + (i / N) * span;
+    const p = project(MP(uu, side * HW, k));
+    if (p[2] < 0.15 || !isFinite(p[0])) { pen = false; continue; }
+    d += (pen ? ' L ' : ' M ') + p[0].toFixed(1) + ' ' + p[1].toFixed(1);
+    pen = true;
+  }
+  return <path d={d} fill="none" stroke={TOK.accent} strokeOpacity={intensity * 0.85} strokeWidth={2.5 + intensity * 4} strokeLinecap="round" />;
+}
+
+/* A quick bright ring right where the paw actually connects — gives the
+   hit a discrete beat instead of a continuous push. */
+function ContactFlash({ x, y, t, active }) {
+  if (!active) return null;
+  const dur = 0.32;
+  const p = clamp(t / dur, 0, 1);
+  const r = 14 + p * 68;
+  return <circle cx={x} cy={y} r={r} fill="none" stroke={TOK.text} strokeOpacity={(1 - p) * 0.85} strokeWidth={3 - p * 2} />;
 }
 
 /* ================= overlays ================= */
@@ -280,7 +285,8 @@ function Piece({ t }) {
 
   // The ball leads; the camera rides the surface just behind it. Two circuits
   // of u (0 → 4π) is what it takes to come back the same way up, so the loop
-  // closes exactly — that IS the one-sidedness.
+  // closes exactly — that IS the one-sidedness. Camera aim stays on this
+  // deterministic path even when the cursor bats the ball off it.
   const b = ballAt(T, total, k);
   const uCam = MOTION.rush([0, total], [0, TAU * 2])(T);
   const nCam = NRM(uCam, 0, k), tCam = V.norm(dU(uCam, 0, k));
@@ -291,8 +297,113 @@ function Piece({ t }) {
   const up = V.norm(V.add(nCam, V.mul(tCam, 0.05)));
   const project = makeCam(eye, tgt, up, FOCAL);
 
+  const deflRef = React.useRef({ v: 0, vel: 0, lastT: null });
+  const mouseRef = React.useRef({ x: 0, y: 0, active: false });
+  const trailRef = React.useRef([]);
+  const fallRef = React.useRef({ phase: 'normal', t: 0, origin: null, dir: null });
+  const flashRef = React.useRef({ active: false, t: 0, x: 0, y: 0, prevPunch: 0 });
+
+  // The interactive paw must keep painting even if the composition clock
+  // isn't advancing (paused/idle) \u2014 drive our own render loop independent of it.
+  const [, forceTick] = React.useState(0);
+  React.useEffect(() => {
+    let raf;
+    const loop = () => { forceTick((x) => (x + 1) % 1e9); raf = requestAnimationFrame(loop); };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const dfl = deflRef.current;
+  const fall = fallRef.current;
+  const now = performance.now();
+  const dt = clamp(dfl.lastT == null ? 0 : (now - dfl.lastT) / 1000, 0, 0.05);
+  dfl.lastT = now;
+
+  const FALL_LIMIT = HW * 0.85, FALL_DUR = 0.7, POPIN_DUR = 0.35, GRAVITY = 2.4;
+  let punch = 0, ballPoint, surfacePoint, opacity = 1, scaleMul = 1, stretchAngle = 0, stretchAmt = 0, hot = 0, edgeIntensity = 0, edgeSide = 1;
+
+  if (fall.phase === 'normal') {
+    let cur = null;
+    if (t.interactivePaw && mouseRef.current.active) {
+      const eps = 0.05;
+      const curV = clamp(b.v + dfl.v, -HW * 0.95, HW * 0.95);
+      cur = project(ballPointFromUV(b.u, curV, k));
+      if (cur[2] > 0.1) {
+        const dCur = Math.hypot(cur[0] - mouseRef.current.x, cur[1] - mouseRef.current.y);
+        if (dCur < REPEL_R) {
+          const s1 = project(ballPointFromUV(b.u, clamp(curV + eps, -HW * 0.95, HW * 0.95), k));
+          const s2 = project(ballPointFromUV(b.u, clamp(curV - eps, -HW * 0.95, HW * 0.95), k));
+          const d1 = Math.hypot(s1[0] - mouseRef.current.x, s1[1] - mouseRef.current.y);
+          const d2 = Math.hypot(s2[0] - mouseRef.current.x, s2[1] - mouseRef.current.y);
+          const dir = d1 > d2 ? 1 : -1;
+          punch = 1 - dCur / REPEL_R;
+          dfl.vel += dir * punch * REPEL_FORCE * dt;
+        }
+      }
+    }
+    const flash = flashRef.current;
+    if (punch > 0.78 && flash.prevPunch <= 0.78 && cur) {
+      flash.active = true; flash.t = 0; flash.x = cur[0]; flash.y = cur[1];
+    }
+    flash.prevPunch = punch;
+    dfl.vel += (-SPRING_K * dfl.v - SPRING_D * dfl.vel) * dt;
+    const tentative = dfl.v + dfl.vel * dt;
+    if (Math.abs(tentative) > FALL_LIMIT) {
+      fall.phase = 'falling'; fall.t = 0;
+      fall.origin = ballPointFromUV(b.u, clamp(tentative, -HW * 0.95, HW * 0.95), k);
+      fall.dir = NRM(b.u, tentative, k);
+      dfl.v = 0; dfl.vel = 0;
+    } else {
+      dfl.v = tentative;
+    }
+    const vFinal = clamp(b.v + dfl.v, -HW * 0.95, HW * 0.95);
+    ballPoint = ballPointFromUV(b.u, vFinal, k);
+    surfacePoint = MP(b.u, vFinal, k);
+    trailRef.current = [ballPoint, ...trailRef.current].slice(0, 9);
+
+    const eps2 = 0.04;
+    const sA = project(ballPointFromUV(b.u, clamp(vFinal + eps2, -HW * 0.95, HW * 0.95), k));
+    const sB = project(ballPointFromUV(b.u, clamp(vFinal - eps2, -HW * 0.95, HW * 0.95), k));
+    stretchAngle = Math.atan2(sA[1] - sB[1], sA[0] - sB[0]) * 180 / Math.PI;
+    stretchAmt = clamp(Math.abs(dfl.vel) * 0.06, 0, 0.5);
+    hot = clamp(Math.abs(dfl.v) / (HW * 0.7), 0, 1);
+    edgeIntensity = clamp(Math.pow(Math.abs(dfl.v) / FALL_LIMIT, 2), 0, 1);
+    edgeSide = dfl.v >= 0 ? 1 : -1;
+  } else if (fall.phase === 'falling') {
+    fall.t += dt;
+    const ft = fall.t;
+    ballPoint = V.add(V.add(fall.origin, V.mul(fall.dir, 0.5 * ft)), [0, 0, -0.5 * GRAVITY * ft * ft]);
+    surfacePoint = null;
+    opacity = clamp(1 - ft / FALL_DUR, 0, 1);
+    scaleMul = clamp(1 - 0.5 * (ft / FALL_DUR), 0.4, 1);
+    if (fall.t >= FALL_DUR) { fall.phase = 'popin'; fall.t = 0; }
+  } else {
+    fall.t += dt;
+    const pt = clamp(fall.t / POPIN_DUR, 0, 1);
+    ballPoint = ballPointFromUV(b.u, b.v, k);
+    surfacePoint = MP(b.u, b.v, k);
+    opacity = pt;
+    scaleMul = 0.5 + 0.6 * Math.sin(pt * Math.PI * 0.6);
+    trailRef.current = [];
+    if (fall.t >= POPIN_DUR) fall.phase = 'normal';
+  }
+
+  if (flashRef.current.active) {
+    flashRef.current.t += dt;
+    if (flashRef.current.t > 0.32) flashRef.current.active = false;
+  }
+
+  const toLocal = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    return { x: (e.clientX - rect.left) / rect.width * W, y: (e.clientY - rect.top) / rect.height * H };
+  };
+
   return (
-    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', background: TOK.bg }}>
+    <div
+      style={{ position: 'absolute', inset: 0, overflow: 'hidden', background: TOK.bg, cursor: t.interactivePaw ? 'none' : 'default' }}
+      onMouseMove={(e) => { if (!t.interactivePaw) return; const p = toLocal(e); mouseRef.current.x = p.x; mouseRef.current.y = p.y; mouseRef.current.active = true; }}
+      onMouseLeave={() => { mouseRef.current.active = false; }}
+    >
       <div style={{
         position: 'absolute', left: '50%', top: '54%', width: 1700, height: 1400,
         transform: 'translate(-50%,-50%)', pointerEvents: 'none',
@@ -301,8 +412,10 @@ function Piece({ t }) {
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ position: 'absolute', left: 0, top: 0 }}>
         <Surface project={project} k={k} ribs={t.ribs} shaded={t.shaded} />
         <EdgeCurve project={project} k={k} />
-        <Ball project={project} T={T} total={total} k={k} />
-        <CatOutline project={project} T={T} total={total} k={k} />
+        <EdgeWarning project={project} k={k} u={b.u} side={edgeSide} intensity={edgeIntensity} />
+        <Ball project={project} point={ballPoint} surfacePoint={surfacePoint} trailPts={trailRef.current.slice(1)} opacity={opacity} scaleMul={scaleMul} stretchAngle={stretchAngle} stretchAmt={stretchAmt} hot={hot} />
+        <ContactFlash x={flashRef.current.x} y={flashRef.current.y} t={flashRef.current.t} active={flashRef.current.active} />
+        <CursorPaw x={mouseRef.current.x} y={mouseRef.current.y} active={t.interactivePaw && mouseRef.current.active} punch={punch} />
       </svg>
       <Equations T={T} CUES={CUES} total={total} k={k} on={t.showEquations} />
       <Wordmark title={t.title} subtitle={t.subtitle} />
@@ -357,6 +470,7 @@ function MobiusScene() {
         <TweakRadio label="Half-twists" value={t.twists} options={[1, 2, 3]} onChange={(v) => setTweak('twists', Number(v))} />
         <TweakSlider label="Ribs" value={t.ribs} min={24} max={140} step={4} onChange={(v) => setTweak('ribs', v)} />
         <TweakToggle label="Shaded faces" value={t.shaded} onChange={(v) => setTweak('shaded', v)} />
+        <TweakToggle label="Interactive paw" value={t.interactivePaw} onChange={(v) => setTweak('interactivePaw', v)} />
         <TweakSection label="Type" />
         <TweakToggle label="Show equations" value={t.showEquations} onChange={(v) => setTweak('showEquations', v)} />
         <TweakText label="Name" value={t.title} onChange={(v) => setTweak('title', v)} />

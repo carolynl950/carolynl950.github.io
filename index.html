@@ -46,6 +46,34 @@
   }
   .proj-card:hover .proj-index { color: var(--color-accent-600); }
   .proj-card .card-title { padding-right: var(--space-8); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+    gap: calc(var(--space-8) * 2);
+    align-items: center;
+  }
+  .about-photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid var(--color-neutral-800);
+    box-shadow: var(--shadow-md);
+  }
+  .about-photo-caption {
+    margin: var(--space-3) 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 38ch;
+    color: var(--color-neutral-400);
+  }
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: var(--space-8); }
+    .about-figure { max-width: 380px; }
+  }
 </style>
 <script>window.OM_SCENES = '[{"name":"Roll","dur":2,"desc":"First person on the surface, following a ball that rolls ahead along the band"},{"name":"Rise","dur":2,"desc":"The band twists up and the far side comes into view ahead"},{"name":"Flip","dur":2,"desc":"Halfway: you pass over your own starting point, now upside down"},{"name":"Home","dur":2,"desc":"The second circuit brings you back the same way up, closing the loop"}]';</script>
 <script>window.OM_PLAYBACK = '{"mode":"loop"}';</script>
@@ -53,9 +81,10 @@
   "twists": 1,
   "ribs": 80,
   "shaded": true,
+  "interactivePaw": true,
   "showEquations": false,
   "title": "Carolyn Lee",
-  "subtitle": "Computer Science — New York",
+  "subtitle": "Columbia Engineering — CS & Applied Math",
   "motionEditor": true
 }/*EDITMODE-END*/;</script>
 </helmet>
@@ -73,11 +102,17 @@
       </div>
     </nav>
     <div id="about" style="padding: calc(var(--space-8) * 3);">
-      <div style="display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px;">
-        <span class="card-kicker">About</span>
-        <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Hi, I&rsquo;m Carolyn.</h2>
-        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">I&rsquo;m a student at Columbia Engineering studying computer science and applied math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!</p>
-        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Outside of school, I enjoy working out, photography, and exploring the city.</p>
+      <div class="about-grid">
+        <div style="display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px;">
+          <span class="card-kicker">About</span>
+          <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Hi, I&rsquo;m Carolyn.</h2>
+          <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">I&rsquo;m a student at Columbia Engineering studying computer science and applied math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!</p>
+          <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Outside of school, I enjoy working out, photography, and exploring the city.</p>
+        </div>
+        <figure class="about-figure" style="margin: 0;">
+          <img class="about-photo" src="img/cat.jpg" alt="Carolyn&rsquo;s cat" loading="lazy" decoding="async" width="760" height="950">
+          <figcaption class="about-photo-caption">My cat, who paws everything off the table &mdash; and inspired the M&ouml;bius scene up top.</figcaption>
+        </figure>
       </div>
     </div>
     <div id="work" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: calc(var(--space-8) * 3); border-top: 1px solid var(--color-neutral-800);">

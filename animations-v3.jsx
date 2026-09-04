@@ -402,12 +402,19 @@ function Stage({
   React.useEffect(() => {
     if (!stageRef.current) return;
     const el = stageRef.current;
+    let raf = null, tries = 0;
     const measure = () => {
       const barH = 44; // playback bar height
-      const s = Math.min(
-        el.clientWidth / width,
-        (el.clientHeight - barH) / height
-      );
+      const r = el.getBoundingClientRect();
+      let cw = r.width || el.clientWidth, ch = r.height || el.clientHeight;
+      if (!cw || !ch) {
+        tries++;
+        // keep retrying briefly, but never get stuck at the default scale forever —
+        // after ~0.6s give up and approximate from the viewport instead
+        if (tries < 40) { raf = requestAnimationFrame(measure); return; }
+        cw = cw || window.innerWidth; ch = ch || window.innerHeight;
+      }
+      const s = Math.min(cw / width, (ch - barH) / height);
       setScale(Math.max(0.05, s));
     };
     measure();
@@ -417,6 +424,7 @@ function Stage({
     return () => {
       ro.disconnect();
       window.removeEventListener('resize', measure);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, [width, height]);
 
