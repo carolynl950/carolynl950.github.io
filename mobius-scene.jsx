@@ -127,6 +127,79 @@ const ballAt = (T, total, k) => {
   return { u, v, p: V.add(MP(u, v, k), V.mul(n, BALL_R)), n };
 };
 
+/* A cat outline sits outside the band entirely, a large foreground
+   silhouette perched in the corner. It doesn't ride the surface — it's a
+   flat overlay, so camera moves through the twist never distort it — and
+   one paw keeps reaching toward wherever the ball currently projects to,
+   batting at it in a steady rhythm. Line art only, matching the edge curve. */
+const CAT_ANCHOR = { x: 1460, y: 1050 };
+const CAT_SCALE = 1.35;
+const CAT_PIVOT_LOCAL = [200, 463]; // lowest point of the silhouette (tail loop), so nothing clips the frame bottom
+const CAT_SHOULDER_LOCAL = [90, 255]; // where the reaching (upper) paw hinges
+const CAT_SWIPE_PERIOD = 1.4;
+const CAT_MAX_REACH = 260;
+
+// nose → forehead → over the head → nape → back → hip → tail, curling at the tip
+const CAT_BACK_D = 'M 55 205 C 40 175 38 135 55 100 C 70 65 100 45 130 55 ' +
+  'C 160 65 185 85 205 115 C 250 140 300 190 315 250 C 325 295 315 335 295 365 ' +
+  'C 275 390 250 400 225 402 C 260 395 290 400 330 415 C 365 425 400 420 415 440 ' +
+  'C 425 452 412 463 398 452 C 390 446 396 434 402 424';
+// chin, chest, the one visible front leg and its paw
+const CAT_FRONT_D = 'M 55 205 C 60 230 68 255 78 278 C 88 298 92 318 92 340 L 95 415 ' +
+  'C 95 432 85 442 68 445 M 68 445 L 52 440 M 68 445 L 68 458 M 68 445 L 84 442';
+const CAT_EAR1_D = 'M 90 25 L 65 -25 L 128 40';
+const CAT_EAR2_D = 'M 150 50 L 158 0 L 195 60';
+const CAT_WHISKERS_D = 'M 50 190 L -20 175 M 48 205 L -25 205 M 50 220 L -20 235';
+
+function CatOutline({ project, T, total, k }) {
+  const b = ballAt(T, total, k);
+  const bp = project(b.p);
+  const tx = CAT_ANCHOR.x - CAT_PIVOT_LOCAL[0] * CAT_SCALE;
+  const ty = CAT_ANCHOR.y - CAT_PIVOT_LOCAL[1] * CAT_SCALE;
+  const pivot = [tx + CAT_SHOULDER_LOCAL[0] * CAT_SCALE, ty + CAT_SHOULDER_LOCAL[1] * CAT_SCALE];
+
+  let ex = pivot[0], ey = pivot[1], reach = 0;
+  if (bp[2] > 0.12) {
+    const dx = bp[0] - pivot[0], dy = bp[1] - pivot[1];
+    const dist = Math.hypot(dx, dy) || 1;
+    const dirx = dx / dist, diry = dy / dist;
+    const pulse = Math.max(0, Math.sin((T / CAT_SWIPE_PERIOD) * TAU));
+    reach = pulse * Math.min(CAT_MAX_REACH * CAT_SCALE, dist * 0.85);
+    ex = pivot[0] + dirx * reach;
+    ey = pivot[1] + diry * reach;
+  }
+  const ang = Math.atan2(ey - pivot[1], ex - pivot[0]);
+  const perp = [-Math.sin(ang), Math.cos(ang)];
+  const midx = (pivot[0] + ex) / 2 + perp[0] * 18, midy = (pivot[1] + ey) / 2 + perp[1] * 18;
+  const toe1 = [ex + perp[0] * 14 - Math.cos(ang) * 10, ey + perp[1] * 14 - Math.sin(ang) * 10];
+  const toe2 = [ex - perp[0] * 14 - Math.cos(ang) * 10, ey - perp[1] * 14 - Math.sin(ang) * 10];
+  const STROKE = TOK.text;
+
+  return (
+    <g>
+      <g transform={`translate(${tx},${ty}) scale(${CAT_SCALE})`} fill="none" stroke={STROKE}
+         strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity={0.92}>
+        <path d={CAT_BACK_D} />
+        <path d={CAT_FRONT_D} />
+        <path d={CAT_EAR1_D} />
+        <path d={CAT_EAR2_D} />
+        <circle cx="85" cy="150" r="6" fill={STROKE} stroke="none" />
+        <circle cx="130" cy="148" r="6" fill={STROKE} stroke="none" />
+        <circle cx="55" cy="205" r="5" fill={STROKE} stroke="none" />
+        <path d={CAT_WHISKERS_D} strokeWidth={3} />
+      </g>
+      <path d={`M ${pivot[0]} ${pivot[1]} Q ${midx} ${midy} ${ex} ${ey}`} fill="none" stroke={STROKE}
+            strokeWidth={5} strokeLinecap="round" vectorEffect="non-scaling-stroke" opacity={0.92} />
+      {reach > 20 && (
+        <g stroke={STROKE} strokeWidth={3} strokeLinecap="round" opacity={0.9}>
+          <line x1={ex} y1={ey} x2={toe1[0]} y2={toe1[1]} />
+          <line x1={ex} y1={ey} x2={toe2[0]} y2={toe2[1]} />
+        </g>
+      )}
+    </g>
+  );
+}
+
 function Ball({ project, T, total, k }) {
   const b = ballAt(T, total, k);
   const p = project(b.p);
@@ -229,6 +302,7 @@ function Piece({ t }) {
         <Surface project={project} k={k} ribs={t.ribs} shaded={t.shaded} />
         <EdgeCurve project={project} k={k} />
         <Ball project={project} T={T} total={total} k={k} />
+        <CatOutline project={project} T={T} total={total} k={k} />
       </svg>
       <Equations T={T} CUES={CUES} total={total} k={k} on={t.showEquations} />
       <Wordmark title={t.title} subtitle={t.subtitle} />

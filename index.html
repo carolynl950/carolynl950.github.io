@@ -46,8 +46,6 @@
   }
   .proj-card:hover .proj-index { color: var(--color-accent-600); }
   .proj-card .card-title { padding-right: var(--space-8); }
-
-  .stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.12); }
 </style>
 <script>window.OM_SCENES = '[{"name":"Roll","dur":2,"desc":"First person on the surface, following a ball that rolls ahead along the band"},{"name":"Rise","dur":2,"desc":"The band twists up and the far side comes into view ahead"},{"name":"Flip","dur":2,"desc":"Halfway: you pass over your own starting point, now upside down"},{"name":"Home","dur":2,"desc":"The second circuit brings you back the same way up, closing the loop"}]';</script>
 <script>window.OM_PLAYBACK = '{"mode":"loop"}';</script>
@@ -69,12 +67,20 @@
     <nav class="nav" style="padding: var(--space-6) calc(var(--space-8) * 3);">
       <span class="nav-brand">Carolyn Lee</span>
       <div style="display: flex; gap: var(--space-6); align-items: center;">
-        <a href="#work">Work</a>
         <a href="#about">About</a>
+        <a href="#work">Work</a>
         <a href="#contact">Contact</a>
       </div>
     </nav>
-    <div id="work" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: calc(var(--space-8) * 3);">
+    <div id="about" style="padding: calc(var(--space-8) * 3);">
+      <div style="display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px;">
+        <span class="card-kicker">About</span>
+        <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Hi, I&rsquo;m Carolyn.</h2>
+        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">I&rsquo;m a student at Columbia Engineering studying computer science and applied math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!</p>
+        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Outside of school, I enjoy working out, photography, and exploring the city.</p>
+      </div>
+    </div>
+    <div id="work" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: calc(var(--space-8) * 3); border-top: 1px solid var(--color-neutral-800);">
       <div>
         <span class="card-kicker">Selected work</span>
         <h1 style="margin: var(--space-2) 0 0; letter-spacing: -0.02em;">Projects</h1>
@@ -142,25 +148,15 @@
         </div>
       </div>
     </div>
-    <div id="about" style="border-top: 1px solid var(--color-neutral-800); padding-bottom: calc(var(--space-8) * 3);">
-      <div style="display: flex; flex-direction: column; gap: var(--space-4); padding: calc(var(--space-8) * 3) calc(var(--space-8) * 3) calc(var(--space-8) * 2); max-width: 640px;">
-        <span class="card-kicker">About</span>
-        <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Hi, I&rsquo;m Carolyn.</h2>
-        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">I&rsquo;m a student at Columbia Engineering studying computer science and applied math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!</p>
-        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Outside of school, I enjoy working out, photography, and exploring the city.</p>
-      </div>
-      <div style="background: var(--color-section); display: flex; flex-wrap: wrap;">
-        <div class="stat-item" style="flex: 1 1 220px; padding: var(--space-8) calc(var(--space-8) * 3);">
-          <div class="card-kicker">Studying</div>
-          <div style="font-family: var(--font-heading); font-weight: 600; font-size: 21px; margin-top: var(--space-2);">CS &amp; Applied Math</div>
-        </div>
-        <div class="stat-item" style="flex: 1 1 220px; padding: var(--space-8) calc(var(--space-8) * 3);">
-          <div class="card-kicker">At</div>
-          <div style="font-family: var(--font-heading); font-weight: 600; font-size: 21px; margin-top: var(--space-2);">Columbia Engineering</div>
-        </div>
-        <div class="stat-item" style="flex: 1 1 220px; padding: var(--space-8) calc(var(--space-8) * 3);">
-          <div class="card-kicker">Outside class</div>
-          <div style="font-family: var(--font-heading); font-weight: 600; font-size: 21px; margin-top: var(--space-2);">Lifting, photography, NYC</div>
+    <div id="contact" style="border-top: 1px solid var(--color-neutral-800); padding: calc(var(--space-8) * 3);">
+      <div style="display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px;">
+        <span class="card-kicker">Contact</span>
+        <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Let&rsquo;s connect.</h2>
+        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Feel free to reach out &mdash; I&rsquo;m always happy to chat about projects, collaborations, or opportunities.</p>
+        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2);">
+          <a class="btn btn-secondary" href="https://linkedin.com/in/carolynl950" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn btn-secondary" href="https://github.com/carolynl950" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn-secondary" href="mailto:yyl2127@columbia.edu">Email</a>
         </div>
       </div>
     </div>

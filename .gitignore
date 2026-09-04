@@ -1,1 +1,13 @@
+# macOS
 .DS_Store
+
+# Editor
+*.code-workspace
+.vscode/
+.idea/
+
+# gstack
+.gstack/
+
+# Logs
+*.log
