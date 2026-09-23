@@ -9,7 +9,7 @@ import { resolve } from 'node:path';
 const spaFallback = {
   name: 'spa-fallback-404',
   closeBundle() {
-    const dist = resolve(__dirname, 'dist');
+    const dist = resolve(import.meta.dirname, 'dist');
     copyFileSync(resolve(dist, 'index.html'), resolve(dist, '404.html'));
   },
 };
