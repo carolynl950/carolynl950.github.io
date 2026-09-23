@@ -1,202 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Carolyn Lee</title>
-<meta name="description" content="Carolyn Lee is a Columbia Engineering student building things with code and math. Based in New York City.">
-<meta property="og:title" content="Carolyn Lee — Portfolio">
-<meta property="og:description" content="Columbia Engineering student in New York City. Projects in AI, web, and wearables.">
-<link rel="icon" href="img/favicon.png">
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
-<link rel="stylesheet" href="nocturne/styles.css" />
-<style>
-  html, body { margin: 0; padding: 0; background: var(--color-bg); }
-  a { color: var(--color-accent); text-decoration: none; }
-  a:hover { color: var(--color-accent-300); }
-
-  .proj-card {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid transparent;
-    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-  }
-  .proj-card::before {
-    content: "";
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--color-accent), transparent 85%);
-    opacity: 0; transform: scaleX(0.4); transform-origin: left;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-  .proj-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--color-neutral-700);
-    box-shadow: var(--shadow-md);
-  }
-  .proj-card:hover::before { opacity: 1; transform: scaleX(1); }
-  .proj-index {
-    position: absolute; top: var(--space-3); right: var(--space-4);
-    font-family: var(--font-heading); font-size: 30px; font-weight: 600;
-    color: var(--color-accent-800); line-height: 1; user-select: none;
-    transition: color 0.25s ease;
-  }
-  .proj-card:hover .proj-index { color: var(--color-accent-600); }
-  .proj-card .card-title { padding-right: var(--space-8); }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
-    gap: calc(var(--space-8) * 2);
-    align-items: center;
-  }
-  .about-photo {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    display: block;
-    border-radius: var(--radius-lg, 12px);
-    border: 1px solid var(--color-neutral-800);
-    box-shadow: var(--shadow-md);
-  }
-  .about-photo-caption {
-    margin: var(--space-3) 0 0;
-    font-size: 14px;
-    line-height: 1.5;
-    max-width: 38ch;
-    color: var(--color-neutral-400);
-  }
-  @media (max-width: 900px) {
-    .about-grid { grid-template-columns: 1fr; gap: var(--space-8); }
-    .about-figure { max-width: 380px; }
-  }
-</style>
-<script>window.OM_SCENES = '[{"name":"Roll","dur":2,"desc":"First person on the surface, following a ball that rolls ahead along the band"},{"name":"Rise","dur":2,"desc":"The band twists up and the far side comes into view ahead"},{"name":"Flip","dur":2,"desc":"Halfway: you pass over your own starting point, now upside down"},{"name":"Home","dur":2,"desc":"The second circuit brings you back the same way up, closing the loop"}]';</script>
-<script>window.OM_PLAYBACK = '{"mode":"loop"}';</script>
-<script>window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "twists": 1,
-  "ribs": 80,
-  "shaded": true,
-  "interactivePaw": true,
-  "showEquations": false,
-  "title": "Carolyn Lee",
-  "subtitle": "Columbia Engineering — CS & Applied Math",
-  "motionEditor": true
-}/*EDITMODE-END*/;</script>
-</helmet>
-<div style="background: var(--color-bg); color: var(--color-text); font-family: var(--font-body);">
-  <div style="position: sticky; top: 0; height: 100vh; overflow: hidden;">
-    <x-import component-from-global-scope="MobiusScene" from="./animations-v3.jsx ./tweaks-panel.jsx ./mobius-scene.jsx" hint-size="100%,100%"></x-import>
-  </div>
-  <div style="position: relative; min-height: 100vh; background: var(--color-bg); border-top: 1px solid var(--color-neutral-800); display: flex; flex-direction: column;">
-    <nav class="nav" style="padding: var(--space-6) calc(var(--space-8) * 3);">
-      <span class="nav-brand">Carolyn Lee</span>
-      <div style="display: flex; gap: var(--space-6); align-items: center;">
-        <a href="#about">About</a>
-        <a href="#work">Work</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </nav>
-    <div id="about" style="padding: calc(var(--space-8) * 3);">
-      <div class="about-grid">
-        <div style="display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px;">
-          <span class="card-kicker">About</span>
-          <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Hi, I&rsquo;m Carolyn.</h2>
-          <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">I&rsquo;m a student at Columbia Engineering studying computer science and applied math. I love building things that people could use in their lives, learning from the process of making, and sharing what I learn with others!</p>
-          <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Outside of school, I enjoy working out, photography, and exploring the city.</p>
-        </div>
-        <figure class="about-figure" style="margin: 0;">
-          <img class="about-photo" src="img/cat.jpg" alt="Carolyn&rsquo;s cat" loading="lazy" decoding="async" width="760" height="950">
-          <figcaption class="about-photo-caption">My cat, who paws everything off the table &mdash; and inspired the M&ouml;bius scene up top.</figcaption>
-        </figure>
-      </div>
-    </div>
-    <div id="work" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: calc(var(--space-8) * 3); border-top: 1px solid var(--color-neutral-800);">
-      <div>
-        <span class="card-kicker">Selected work</span>
-        <h1 style="margin: var(--space-2) 0 0; letter-spacing: -0.02em;">Projects</h1>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4);">
-        <div class="card proj-card elev-sm" style="grid-column: span 2;">
-          <span class="proj-index">01</span>
-          <span class="tag tag-accent" style="align-self: flex-start;">Featured</span>
-          <div class="card-title" style="font-size: 22px;">MoodSwing</div>
-          <p class="card-body">An AI DJ that reads your facial expressions and queues up songs to match your mood.</p>
-          <div class="card-meta">
-            <a href="https://devpost.com/software/moodswing-27fmc0" target="_blank" rel="noopener">Devpost</a>
-            <span>&middot;</span>
-            <a href="https://docs.google.com/presentation/d/e/2PACX-1vTd5uQNZnFHuuRyLkTmFXOXjKqHAkQrkd8v270rPZYDTrnoFpL-Db4YIe7GrnhQm-SEoJmFl4QLbRM5/pub" target="_blank" rel="noopener">Slides</a>
-          </div>
-        </div>
-        <div class="card proj-card elev-sm">
-          <span class="proj-index">02</span>
-          <div class="card-title">CalRoarie</div>
-          <p class="card-body">A real-time nutrition (calories, protein, and more) tracking app for Columbia dining halls.</p>
-          <div class="card-meta">
-            <a href="https://apps.apple.com/us/app/calroarie/id6758307010" target="_blank" rel="noopener">Download</a>
-          </div>
-        </div>
-        <div class="card proj-card elev-sm">
-          <span class="proj-index">03</span>
-          <div class="card-title">aiMed</div>
-          <p class="card-body">An AI medical agent that answers questions about medication interactions and compares treatment options.</p>
-          <div class="card-meta">
-            <a href="https://devpost.com/software/aimed-ek4mcr" target="_blank" rel="noopener">Devpost</a>
-            <span>&middot;</span>
-            <a href="https://docs.google.com/presentation/d/e/2PACX-1vR4SR1dX26etsq-DzclCWGfoyN1nSAAOBxsCvPtF3j9ITNtt3MiEwGWLTyDCdPAa552fjoIvMt9-Kq4/pub" target="_blank" rel="noopener">Slides</a>
-          </div>
-        </div>
-        <div class="card proj-card elev-sm">
-          <span class="proj-index">04</span>
-          <div class="card-title">StockTrader</div>
-          <p class="card-body">A stock trading simulator where students compete on portfolios and teachers track their progress.</p>
-          <div class="card-meta">
-            <a href="https://cmtrading.flutterflow.app/uploadpage" target="_blank" rel="noopener">Live platform</a>
-            <span>&middot;</span>
-            <a href="https://docs.google.com/presentation/d/e/2PACX-1vT4idOeAKFyYLhLYYL9qC4wG6Hyl4pz_R6zbXyQB9uIGzav6TCqWrrFhgEfZXk4LqJwCSnOHwMOV1ld/pub" target="_blank" rel="noopener">Slides</a>
-          </div>
-        </div>
-        <div class="card proj-card elev-sm">
-          <span class="proj-index">05</span>
-          <div class="card-title">Redis From Scratch</div>
-          <p class="card-body">A miniature Redis server built from scratch in C++ &mdash; no libraries beyond the standard library and POSIX sockets.</p>
-          <div class="card-meta">
-            <span class="tag tag-outline">Ongoing</span>
-          </div>
-        </div>
-        <div class="card proj-card elev-sm">
-          <span class="proj-index">06</span>
-          <div class="card-title">GEMM</div>
-          <p class="card-body">Writing a GEMM (matrix multiplication) kernel in C++, learning performance optimization.</p>
-          <div class="card-meta">
-            <span class="tag tag-outline">Ongoing</span>
-          </div>
-        </div>
-        <div class="card proj-card elev-sm">
-          <span class="proj-index">07</span>
-          <div class="card-title">Reaction Game</div>
-          <p class="card-body">A quick reflex game &mdash; catch the falling stick before it hits the ground.</p>
-        </div>
-      </div>
-    </div>
-    <div id="contact" style="border-top: 1px solid var(--color-neutral-800); padding: calc(var(--space-8) * 3);">
-      <div style="display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px;">
-        <span class="card-kicker">Contact</span>
-        <h2 style="margin: 0; font-size: 44px; letter-spacing: -0.01em;">Let&rsquo;s connect.</h2>
-        <p style="margin: 0; color: var(--color-neutral-300); max-width: 60ch;">Feel free to reach out &mdash; I&rsquo;m always happy to chat about projects, collaborations, or opportunities.</p>
-        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2);">
-          <a class="btn btn-secondary" href="https://linkedin.com/in/carolynl950" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="btn btn-secondary" href="https://github.com/carolynl950" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn btn-secondary" href="mailto:yyl2127@columbia.edu">Email</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</x-dc>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/img/favicon.png" />
+    <title>Carolyn Lee</title>
+    <meta
+      name="description"
+      content="Carolyn Lee — Columbia Engineering student studying computer science and applied math. Writing and projects."
+    />
+    <meta property="og:title" content="Carolyn Lee" />
+    <meta
+      property="og:description"
+      content="Columbia Engineering student studying computer science and applied math. Writing and projects."
+    />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

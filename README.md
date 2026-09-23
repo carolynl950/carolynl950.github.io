@@ -1,100 +1,69 @@
-# Portfolio site
+# carolynl950.github.io
 
-An animated Möbius intro on the Nocturne design system. Plain static files —
-no build step, no npm install, no framework.
+Personal site — writing and projects. React + Vite, deployed to GitHub Pages.
 
-## Files
+## Running it
 
-```
-index.html          Möbius scene + the page below it
-support.js          Runtime: loads React + Babel, compiles the .jsx in-browser
-animations-v3.jsx   CompositionStage, useComposition, interpolate, Easing, clamp
-tweaks-panel.jsx    TweaksPanel and the Tweak* controls
-mobius-scene.jsx    The Möbius geometry and camera
-nocturne/
-  styles.css        Design tokens + component classes (.btn, .card, .nav, .tag …)
-  readme.md         What each class is for — read before adding sections
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # outputs to dist/
+npm run preview  # serve the built site locally
 ```
 
-## Run it locally
+## Adding a post
 
-The pages fetch the `.jsx` files over HTTP, so opening the HTML by
-double-clicking will not work (`file://` blocks it). Serve the folder:
+Drop a Markdown file in `src/content/posts/`. The filename becomes the URL,
+so `gemm-notes.md` lands at `/writing/gemm-notes`.
 
-    python3 -m http.server 8000
+```markdown
+---
+title: Notes on writing a GEMM kernel
+date: 2026-10-04
+summary: One sentence that shows up in the post list.
+---
 
-Then open http://localhost:8000
+Body goes here. Standard Markdown.
+```
 
-Edit any file and refresh. There is nothing to rebuild.
+Frontmatter fields:
 
-## Using the site
+| Field | Required | Notes |
+|---|---|---|
+| `title` | yes | Shown in the list and as the page heading |
+| `date` | yes | `YYYY-MM-DD`. Posts sort newest first |
+| `summary` | no | One-line blurb in the post list |
+| `draft` | no | `draft: true` hides it from the built site |
 
-The Möbius scene fills the first screen and is scroll-driven — scrolling down
-plays through the four beats defined in `OM_SCENES` (Roll, Rise, Flip, Home)
-and reveals the page content underneath.
+## Adding a project
 
-A **tweaks panel** sits pinned in the bottom-right corner of the page. Drag
-its header to move it, click the `×` to close it. It has three groups:
+Append an object to the array in `src/content/projects.js`. Set
+`featured: true` to surface it on the home page. `status` renders as a small
+tag (used for in-progress work); leave it off for finished projects.
 
-- **Surface** — half-twists (1–3), rib count, and a shaded-faces toggle for
-  the band geometry.
-- **Type** — a show-equations toggle, plus the Name and Tagline text shown
-  on the intro.
-- **Editing** — a "Motion editor" toggle that exposes additional scene/timing
-  controls for the scroll animation.
+## Editing the intro and links
 
-Changes in the panel update the scene live, in the browser, without a
-refresh. They are not saved to disk automatically — to make a change
-permanent, copy the resulting values into the `TWEAK_DEFAULTS` block in
-`index.html` (between the `EDITMODE-BEGIN`/`EDITMODE-END` comments).
+`src/content/site.js` holds the name, role line, intro paragraphs, and the
+GitHub / LinkedIn / email links used in both the hero and the footer.
 
-## Editing
+## Layout
 
-**Scene settings** live in the `TWEAK_DEFAULTS` block near the top of
-`index.html` — name, tagline, number of half-twists, rib count, whether the
-equations show. Change the JSON, refresh.
+```
+src/
+  content/      site.js, projects.js, posts/*.md — everything you edit regularly
+  components/   Nav, Footer, PostList, ProjectList
+  pages/        Home, Writing, Post, Projects, NotFound
+  lib/          posts.js (Markdown loader), useTitle.js
+  styles.css    one stylesheet, CSS variables at the top
+public/         static assets, copied to dist/ as-is
+```
 
-**Page content** is below the sticky scene in `index.html` — the `#work`
-project grid and the `#about` bio + stat band. Edit the cards/text directly,
-using the classes documented in `nocturne/readme.md`.
+## Deploying
 
-**Colors and spacing** come from CSS variables in `nocturne/styles.css`
-(`var(--color-accent)`, `var(--space-6)`, etc.). Change a token there and it
-propagates everywhere.
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and
+publishes to GitHub Pages. This requires **Settings → Pages → Source** set to
+**GitHub Actions** (not "Deploy from a branch").
 
-**Scene motion** is in the `mobius-scene.jsx`. `OM_SCENES` in the HTML defines
-the named beats (Roll, Rise, Flip, Home) and their durations; the scene code
-reads them as `CUES.Rise`, `CUES.Flip`, and so on.
-
-## Deploy to GitHub Pages
-
-The live site is served from a separate repo, `carolynl950/carolynl950.github.io`
-(cloned locally at `~/Desktop/carolynl950.github.io`), not from this folder.
-This folder is the editing source; that repo is the deploy target.
-
-To publish a change:
-
-    SRC=/Users/carolynlee/Desktop/site
-    DEST=~/Desktop/carolynl950.github.io
-    cp "$SRC/index.html" "$SRC/support.js" "$SRC/animations-v3.jsx" \
-       "$SRC/mobius-scene.jsx" "$SRC/tweaks-panel.jsx" "$DEST/"
-    rm -rf "$DEST/nocturne" && cp -R "$SRC/nocturne" "$DEST/nocturne"
-    cd "$DEST"
-    git add -A
-    git commit -m "update portfolio"
-    git push
-
-GitHub Pages serves the `main` branch root directly — no build step. A
-`.nojekyll` file in that repo tells GitHub Pages to skip the Jekyll build
-the repo used to have, so these plain static files are served as-is.
-
-## Known constraints
-
-- React, ReactDOM, and Babel load from unpkg.com at runtime. The site needs a
-  network connection and will not work offline. First paint waits on those
-  three downloads (~1s). If you ever want to remove that dependency you would
-  need to vendor the three scripts locally and precompile the JSX.
-- Babel compiles the JSX in the browser on every load. Fine for a portfolio,
-  measurably slower than a built site.
-- The scene renders a 1920×1080 stage and scale it down, so it is heavy on
-  low-end phones. Consider a reduced rib count on small screens if it stutters.
+GitHub Pages has no SPA rewrite, so the build copies `index.html` to
+`404.html`. That's what makes deep links like `/writing/some-post` work on a
+cold load instead of 404ing.
