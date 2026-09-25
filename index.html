@@ -15,6 +15,15 @@
       content="Columbia Engineering student studying computer science and applied math. Writing and projects."
     />
     <meta property="og:type" content="website" />
+    <script>
+      // Apply a saved theme before first paint so there's no flash.
+      try {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.dataset.theme = theme;
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

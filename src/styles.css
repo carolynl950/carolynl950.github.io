@@ -17,10 +17,26 @@
   --measure: 34rem;
   --page: 56rem;
   --wide: 62rem;
+
+  color-scheme: light;
+}
+
+/* Dark palette applies when the visitor picked dark, or when they haven't
+   picked and their OS prefers dark. index.html sets data-theme before paint. */
+:root[data-theme='dark'] {
+  --bg: #131211;
+  --bg-raised: #1b1a18;
+  --text: #eceae5;
+  --text-muted: #a09a91;
+  --text-faint: #75706a;
+  --rule: #2b2926;
+  --accent: #d9903f;
+
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #131211;
     --bg-raised: #1b1a18;
     --text: #eceae5;
@@ -28,6 +44,8 @@
     --text-faint: #75706a;
     --rule: #2b2926;
     --accent: #d9903f;
+
+    color-scheme: dark;
   }
 }
 
@@ -152,8 +170,34 @@ pre code {
 
 .nav__links {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
   font-size: 0.9rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin: -0.5rem -0.5rem -0.5rem 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+}
+
+.theme-toggle svg {
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .nav__links a {
