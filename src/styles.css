@@ -346,7 +346,23 @@ pre code {
 }
 
 .page__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
   padding-bottom: 2rem;
+}
+
+.page__head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Transparent PNG, like the hero smiski — no frame or background. */
+.page__mascot {
+  flex: 0 0 auto;
+  width: 9rem;
+  height: auto;
 }
 
 /* ---------- article ---------- */
@@ -593,6 +609,17 @@ pre code {
 
   .hero__smiski {
     width: 9rem;
+    align-self: center;
+  }
+
+  .page__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .page__mascot {
+    width: 7rem;
     align-self: center;
   }
 }

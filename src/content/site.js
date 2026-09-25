@@ -10,6 +10,17 @@ export const site = {
     { label: 'LinkedIn', href: 'https://linkedin.com/in/carolynl950' },
     { label: 'Email', href: 'mailto:yyl2127@columbia.edu' },
   ],
+  // One smiski per section page, shown beside the page title.
+  mascots: {
+    projects: {
+      src: '/img/hoop-smiski.png',
+      alt: 'A small green Smiski figure with its arms up, spinning a hula hoop',
+    },
+    writing: {
+      src: '/img/situp-smiski.png',
+      alt: 'A small green Smiski figure mid-sit-up, knees bent and hands behind its head',
+    },
+  },
   // Shown beside the intro on the home page. Each visit advances to the next
   // one in order, so add or reorder freely — the rotation follows this array.
   smiskis: [
