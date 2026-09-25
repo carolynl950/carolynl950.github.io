@@ -1,21 +1,8 @@
 ---
-title: Starting over
+title: perks of documentation
 date: 2026-09-22
-summary: Why I rebuilt this site, and what I want it to be this time.
+summary: love for journaling and documenting my work, and how it helps me think and reflect
 ---
 
-I rebuilt this site from scratch. The old one was a single HTML file wrapped
-around a 3D Möbius strip — fun to make, but there was nowhere to put anything
-new. Every idea I had turned into "where would that even go?"
+i realized that there are so many things i've learned in the past few years that i don't remember. advices i've received, things i've tried,mistakes i've made, and lessons i've learned. there is a joy of recollecting moments from the past you have once had, stumbling across a memory you forgot you even had. however, i want to start documenting these thoughts that i've had, the unique perspectives i once held that may remind my future self of who i started as, to signify my growth, change, and journey. this site is where i want to share my path, and the little things in my life that i find meaningful, funny, and worth sharing :)
 
-So this version is a hub instead of a landing page. Two things live here:
-
-- **Writing** — notes on whatever I'm learning. Systems programming, math,
-  things I got stuck on.
-- **Projects** — what I've built, with links out to the real thing.
-
-Adding a post means dropping a Markdown file in `src/content/posts/`. That's
-the whole workflow, which is the point: the easier it is to add to, the more
-likely I am to actually keep it up.
-
-More soon.

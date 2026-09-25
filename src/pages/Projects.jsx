@@ -1,6 +1,6 @@
 import { projects } from '../content/projects.js';
 import { useTitle } from '../lib/useTitle.js';
-import ProjectList from '../components/ProjectList.jsx';
+import ProjectTabs from '../components/ProjectTabs.jsx';
 
 export default function Projects() {
   useTitle('Projects');
@@ -14,7 +14,7 @@ export default function Projects() {
           whatever I’m currently learning by writing from scratch.
         </p>
       </header>
-      <ProjectList projects={projects} />
+      <ProjectTabs projects={projects} />
     </div>
   );
 }

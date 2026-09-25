@@ -3,6 +3,7 @@ import { site } from '../content/site.js';
 import { projects } from '../content/projects.js';
 import { posts } from '../lib/posts.js';
 import { useTitle } from '../lib/useTitle.js';
+import { useVisitRotation } from '../lib/useVisitRotation.js';
 import PostList from '../components/PostList.jsx';
 import ProjectList from '../components/ProjectList.jsx';
 
@@ -11,24 +12,37 @@ export default function Home() {
 
   const recentPosts = posts.slice(0, 3);
   const featured = projects.filter((project) => project.featured);
+  const smiskis = site.smiskis ?? [];
+  const smiski = smiskis[useVisitRotation(smiskis.length)];
 
   return (
     <div className="wrap">
       <section className="hero">
-        <h1 className="hero__name">{site.name}</h1>
-        <p className="hero__role">{site.role}</p>
-        <div className="hero__intro">
-          {site.intro.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+        <div className="hero__text">
+          <h1 className="hero__name">{site.name}</h1>
+          <p className="hero__role">{site.role}</p>
+          <div className="hero__intro">
+            {site.intro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <div className="hero__links">
+            {site.links.map((link) => (
+              <a key={link.href} href={link.href} rel="noopener">
+                {link.label}
+              </a>
+            ))}
+          </div>
         </div>
-        <div className="hero__links">
-          {site.links.map((link) => (
-            <a key={link.href} href={link.href} rel="noopener">
-              {link.label}
-            </a>
-          ))}
-        </div>
+        {smiski && (
+          <img
+            className="hero__smiski"
+            src={smiski.src}
+            alt={smiski.alt}
+            width={500}
+            height={500}
+          />
+        )}
       </section>
 
       <section className="section">
