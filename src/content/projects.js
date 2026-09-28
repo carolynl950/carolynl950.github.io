@@ -38,6 +38,37 @@
 /** @type {Project[]} */
 export const projects = [
   {
+    slug: 'grwm',
+    title: 'Get Ready With Mirror (GRWM)',
+    date: 'Sep 2026',
+    stack: 'Raspberry Pi, React, TypeScript, Python, C++, ElevenLabs',
+    description:
+      'A voice-controlled smart mirror that turns your next event into a **glanceable getting-ready plan**, with your commute, weather, to-dos, and **spoken cues for when to leave**. A motion sensor lets you **swipe between views hands-free**.',
+    category: 'selected',
+    images: [
+      {
+        src: '/projects/grwm/maproute.jpg',
+        alt: 'The mirror prototype on a table, showing the subway route to class on a map with the time, a leave-by time, and a timed shower, hair, and get-dressed checklist',
+        width: 1400,
+        height: 827,
+      },
+      {
+        src: '/projects/grwm/weather.jpg',
+        alt: 'Three teammates reflected in the mirror behind a weather overlay: 58° and rain, an umbrella reminder, and an hourly forecast, with the "Hey Mirror" voice prompt listening',
+        width: 1400,
+        height: 851,
+      },
+    ],
+    caption: 'The commute route and getting-ready timeline, and the weather view with a voice prompt.',
+    links: [
+      {
+        label: 'Devpost',
+        href: 'https://devpost.com/software/get-ready-with-mirror-grwm',
+      },
+      { label: 'Demo', href: 'https://youtu.be/cdNWhb9-FHc' },
+    ],
+  },
+  {
     slug: 'invisible-string',
     title: 'Invisible String',
     date: '2026',
