@@ -45,6 +45,7 @@ export const projects = [
     description:
       'A voice-controlled smart mirror that turns your next event into a **glanceable getting-ready plan**, with your commute, weather, to-dos, and **spoken cues for when to leave**. A motion sensor lets you **swipe between views hands-free**.',
     category: 'selected',
+    featured: true,
     images: [
       {
         src: '/projects/grwm/maproute.jpg',
@@ -156,7 +157,6 @@ export const projects = [
     description:
       'A published iOS app for you to **track your calories, protein, and more at your university dining halls** — currently available for **Columbia/Barnard and Cornell** students!',
     category: 'selected',
-    featured: true,
     images: [
       {
         src: '/projects/calroarie/columbia-dining.jpg',
