@@ -162,7 +162,6 @@ export const projects = [
     description:
       'An AI DJ that **reads your facial expressions** and queues up songs to **match your mood**.',
     category: 'selected',
-    featured: true,
     images: [
       {
         src: '/projects/moodswing/demo-thumbnail.png',
