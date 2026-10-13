@@ -38,6 +38,50 @@
 /** @type {Project[]} */
 export const projects = [
   {
+    slug: 'home-again',
+    title: 'Home Again',
+    date: '2026',
+    stack: 'Gemini, ElevenLabs, TigerData, Snowflake Cortex, three.js, face-api, Node.js',
+    description:
+      'A gentle game for people living with dementia that turns a **family’s photos, songs, and voices** into a playable dollhouse for **reminiscence**.',
+    category: 'selected',
+    featured: true,
+    images: [
+      {
+        src: '/projects/home-again/homepage.jpg',
+        alt: 'The Home Again title screen: a warm living room with a window onto hills, and two cards, Play for them and Talk for family',
+        width: 1400,
+        height: 755,
+      },
+      {
+        src: '/projects/home-again/dollhouse.jpg',
+        alt: 'The 3D dollhouse at night, asking "What happened this week?" with rooms labeled Photos, Tuesday, Wednesday, Sunday, and Garden',
+        width: 1400,
+        height: 792,
+      },
+      {
+        src: '/projects/home-again/guide-chat.jpg',
+        alt: 'The Family Workshop chat, where the guide asks a family member one warm question at a time, beside a checklist of family members, portraits, a song, photos, voice messages, and things to avoid',
+        width: 1400,
+        height: 777,
+      },
+      {
+        src: '/projects/home-again/insights.jpg',
+        alt: 'The Insights tab: a weekly line chart of seconds to find each person at the table, and a list of mix-ups at the table',
+        width: 1400,
+        height: 777,
+      },
+    ],
+    caption:
+      'The front door, the dollhouse, the family setting things up with the guide, and gentle weekly trends.',
+    links: [
+      {
+        label: 'Devpost',
+        href: 'https://devpost.com/software/home-again-mt7v8n',
+      },
+    ],
+  },
+  {
     slug: 'grwm',
     title: 'Get Ready With Mirror (GRWM)',
     date: 'Sep 2026',
