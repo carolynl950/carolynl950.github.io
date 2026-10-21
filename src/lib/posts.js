@@ -1,8 +1,18 @@
 import { marked } from 'marked';
 
-// Every .md file in src/content/posts becomes a post. The filename is the URL
-// slug, so `first-post.md` lives at /writing/first-post.
-const files = import.meta.glob('../content/posts/*.md', {
+// Writing lives in two places:
+//   src/content/journal/<slug>.md               → /writing/<slug>
+//   src/content/notebooks/<notebook>/<slug>.md  → /writing/notebooks/<notebook>/<slug>
+// Each notebook folder may hold a `_notebook.md` whose frontmatter gives the
+// notebook's title and description; files starting with `_` are never posts.
+// Adding a notebook is just adding a folder — nothing here needs to change.
+const journalFiles = import.meta.glob('../content/journal/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const notebookFiles = import.meta.glob('../content/notebooks/*/*.md', {
   query: '?raw',
   import: 'default',
   eager: true,
@@ -23,24 +33,70 @@ function parseFrontmatter(raw) {
   return { meta, body: raw.slice(match[0].length) };
 }
 
-export const posts = Object.entries(files)
+function toPost(slug, raw, href) {
+  const { meta, body } = parseFrontmatter(raw);
+  return {
+    slug,
+    href,
+    title: meta.title || slug,
+    date: meta.date || '',
+    summary: meta.summary || '',
+    // `tags: tv, philosophy` → ['tv', 'philosophy']
+    tags: (meta.tags || '')
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean),
+    draft: meta.draft === 'true',
+    html: marked.parse(body),
+  };
+}
+
+const byNewest = (a, b) => b.date.localeCompare(a.date);
+
+export const journal = Object.entries(journalFiles)
   .map(([path, raw]) => {
     const slug = path.split('/').pop().replace(/\.md$/, '');
-    const { meta, body } = parseFrontmatter(raw);
-    return {
-      slug,
-      title: meta.title || slug,
-      date: meta.date || '',
-      summary: meta.summary || '',
-      draft: meta.draft === 'true',
-      html: marked.parse(body),
-    };
+    return toPost(slug, raw, `/writing/${slug}`);
   })
   .filter((post) => !post.draft)
-  .sort((a, b) => b.date.localeCompare(a.date));
+  .sort(byNewest);
 
-export function getPost(slug) {
-  return posts.find((post) => post.slug === slug);
+const notebookMap = new Map();
+for (const [path, raw] of Object.entries(notebookFiles)) {
+  const [id, file] = path.split('/').slice(-2);
+  if (!notebookMap.has(id)) {
+    notebookMap.set(id, { id, title: id, description: '', posts: [] });
+  }
+  const notebook = notebookMap.get(id);
+
+  if (file === '_notebook.md') {
+    const { meta } = parseFrontmatter(raw);
+    notebook.title = meta.title || id;
+    notebook.description = meta.description || '';
+    continue;
+  }
+  if (file.startsWith('_')) continue;
+
+  const slug = file.replace(/\.md$/, '');
+  const post = toPost(slug, raw, `/writing/notebooks/${id}/${slug}`);
+  if (!post.draft) notebook.posts.push({ ...post, notebook: id });
+}
+
+// Notebooks with the most recent activity come first.
+export const notebooks = [...notebookMap.values()]
+  .map((notebook) => ({ ...notebook, posts: notebook.posts.sort(byNewest) }))
+  .sort((a, b) => (b.posts[0]?.date || '').localeCompare(a.posts[0]?.date || ''));
+
+// Everything, newest first — used for "recent writing" on the home page.
+export const posts = [...journal, ...notebooks.flatMap((n) => n.posts)].sort(byNewest);
+
+export function getNotebook(id) {
+  return notebooks.find((notebook) => notebook.id === id);
+}
+
+export function getPost(slug, notebookId) {
+  if (notebookId) return getNotebook(notebookId)?.posts.find((post) => post.slug === slug);
+  return journal.find((post) => post.slug === slug);
 }
 
 export function formatDate(date) {

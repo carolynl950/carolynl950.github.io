@@ -5,6 +5,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import Home from './pages/Home.jsx';
 import Writing from './pages/Writing.jsx';
 import Post from './pages/Post.jsx';
+import Notebook from './pages/Notebook.jsx';
 import Projects from './pages/Projects.jsx';
 import NotFound from './pages/NotFound.jsx';
 
@@ -18,6 +19,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/writing" element={<Writing />} />
           <Route path="/writing/:slug" element={<Post />} />
+          <Route path="/writing/notebooks/:notebook" element={<Notebook />} />
+          <Route path="/writing/notebooks/:notebook/:slug" element={<Post />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
