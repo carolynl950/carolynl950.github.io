@@ -437,6 +437,90 @@ pre code {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- certifications ---------- */
+
+.certs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+
+.cert {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.cert:has(a.cert__main:hover) {
+  border-color: var(--text-faint);
+}
+
+.cert__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-decoration: none;
+}
+
+a.cert__main:hover {
+  color: inherit;
+}
+
+/* Badges are usually square and certificates landscape; a fixed frame with
+   `contain` lets both sit centred without cropping. */
+.cert__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 0.9rem;
+  border-radius: 6px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.cert__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cert__initial {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--text-faint);
+}
+
+.cert__title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+a.cert__main:hover .cert__title {
+  color: var(--accent);
+}
+
+.cert__meta {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+.cert__verify {
+  align-self: flex-start;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 /* ---------- page headers ---------- */
 
 .page__title {

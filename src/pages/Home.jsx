@@ -6,6 +6,8 @@ import { useTitle } from '../lib/useTitle.js';
 import { useVisitRotation } from '../lib/useVisitRotation.js';
 import PostList from '../components/PostList.jsx';
 import ProjectList from '../components/ProjectList.jsx';
+import CertificationList from '../components/CertificationList.jsx';
+import { certifications } from '../content/certifications.js';
 
 export default function Home() {
   useTitle(null);
@@ -63,6 +65,13 @@ export default function Home() {
           </Link>
         </div>
         <ProjectList projects={featured} />
+      </section>
+
+      <section className="section">
+        <div className="section__head">
+          <h2 className="section__title">Certifications</h2>
+        </div>
+        <CertificationList certifications={certifications} empty="Certifications coming soon." />
       </section>
     </div>
   );
